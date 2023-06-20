@@ -29,6 +29,7 @@ const ConnectWalletButton = ({ setWalletAddress }: any) => {
         }
   
       } catch (error) {
+        
         console.error("Phantom cüzdanına bağlanırken bir hata oluştu:", error);
       }
     } else {
