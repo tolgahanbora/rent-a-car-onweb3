@@ -76,6 +76,8 @@ const CarCard = ({ car }: CarCardProps) => {
         // sign the transaction
         topupTxData.tx = await signTransaction(topupTxData.tx);
 
+        toast.warning("Please wait for transaction to complate!");
+
         // send the top-up transaction
 
         const storeSig = await elusiv.sendElusivTx(topupTxData);
