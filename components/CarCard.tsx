@@ -31,80 +31,75 @@ const CarCard = ({ car }: CarCardProps) => {
   const carRent = calculateCarRent(city_mpg, year);
 
   const getUser = async () => {
-    const {
-      data,
-      error,
-    } = await supabase.auth.getUser();
+    const { data, error } = await supabase.auth.getUser();
 
     if (!error) {
       setUser(data);
-    
     }
   };
   useEffect(() => {
     getUser();
   }, []);
 
-
   async function performEluvioTransactions() {
-
     try {
       // Checking the wallet connection
-      if (!publicKey) throw new WalletNotConnectedError();
+      if (publicKey) {
+        // getting seed for elusiv
+        const seed = publicKey.toBytes();
 
-      // getting seed for elusiv
-      const seed = publicKey.toBytes();
+        // Create the elusiv instance
+        const cluster = "devnet";
+        const connection = new Connection(
+          "https://api.devnet.solana.com",
+          "confirmed"
+        );
 
-      // Create the elusiv instance
-      const cluster = "devnet";
-      const connection = new Connection(
-        "https://api.devnet.solana.com",
-        "confirmed"
-      );
+        const elusiv = await Elusiv.getElusivInstance(
+          seed,
+          publicKey,
+          connection,
+          cluster
+        );
 
-      const elusiv = await Elusiv.getElusivInstance(
-        seed,
-        publicKey,
-        connection,
-        cluster
-      );
+        // define the recipient
+        const recipient = new PublicKey(
+          "98tuTXembYwBCJJModyyGHBXwhWcaLdFv582bpNN1eV1"
+        );
 
-      // define the recipient
-      const recipient = new PublicKey(
-        "98tuTXembYwBCJJModyyGHBXwhWcaLdFv582bpNN1eV1"
-      );
+        // Top up our private balance with 0.01 SOL
+        let topupTxData = await elusiv.buildTopUpTx(
+          0.01 * LAMPORTS_PER_SOL,
+          "LAMPORTS"
+        );
 
-      // Top up our private balance with 0.01 SOL
-      let topupTxData = await elusiv.buildTopUpTx(
-        0.01 * LAMPORTS_PER_SOL,
-        "LAMPORTS"
-      );
+        // sign the transaction
+        topupTxData.tx = await signTransaction(topupTxData.tx);
 
-      // sign the transaction
-      topupTxData.tx = await signTransaction(topupTxData.tx);
+        // send the top-up transaction
 
-      // send the top-up transaction
+        const storeSig = await elusiv.sendElusivTx(topupTxData);
 
-      const storeSig = await elusiv.sendElusivTx(topupTxData);
+        // Send 0.01 SOL, privately
 
-      // Send 0.01 SOL, privately
+        const sendTx = await elusiv.buildSendTx(
+          0.01 * LAMPORTS_PER_SOL,
+          recipient,
+          "LAMPORTS"
+        );
 
-      const sendTx = await elusiv.buildSendTx(
-        0.01 * LAMPORTS_PER_SOL,
-        recipient,
-        "LAMPORTS"
-      );
+        const sendSig = await elusiv.sendElusivTx(sendTx);
 
-      const sendSig = await elusiv.sendElusivTx(sendTx);
-      
-      toast.success("The payment is successful !");
-      console.log("Ta-da!");
+        toast.success("The payment is successful !");
+        console.log("Ta-da!");
+      } else {
+        toast.warning("Please Connect a wallet");
+      }
     } catch (error) {
       console.error("An error occurred:", error);
     }
   }
 
-  
   return (
     <div className="car-card group">
       <div className="car-card__content">
@@ -185,7 +180,7 @@ const CarCard = ({ car }: CarCardProps) => {
         closeModal={() => setIsOpen(false)}
         car={car}
       />
-     <ToastContainer />
+      <ToastContainer />
     </div>
   );
 };

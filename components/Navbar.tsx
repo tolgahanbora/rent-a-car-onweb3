@@ -14,6 +14,7 @@ import {
   WalletDisconnectButton,
   WalletMultiButton,
 } from "@solana/wallet-adapter-react-ui";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 const NavBar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,6 +28,8 @@ const NavBar = () => {
   const [password, setPassword] = useState("");
 
   const [user, setUser]: any = useState();
+
+  const { disconnect }: any = useWallet();
 
   // Modal açma ve kapama işlemlerini gerçekleştiren fonksiyonlar
   const openModal = () => {
@@ -123,6 +126,7 @@ const NavBar = () => {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setUser("");
+    disconnect();
     toast.success("Logout successful.");
   };
 
@@ -209,14 +213,12 @@ const NavBar = () => {
               </Modal>
 
               <div className="flex items-center space-x-2">
-
-              <WalletMultiButton />
-              <WalletDisconnectButton />
+                <WalletMultiButton />
+                <WalletDisconnectButton />
 
                 <CustomButton
                   title="Profile"
                   btnType="button"
-          
                   containerStyles="text-primary-blue rounded-full bg-white min-w-[130px]"
                   handleClick={openProfileModal}
                 />
@@ -225,18 +227,15 @@ const NavBar = () => {
               <CustomButton
                 title="Logout"
                 btnType="button"
-        
                 containerStyles="text-primary-blue rounded-full bg-white min-w-[130px]"
                 handleClick={handleLogout}
               />
-            
             </>
           ) : (
             <>
               <CustomButton
                 title="Login"
                 btnType="button"
-   
                 containerStyles="text-primary-blue rounded-full bg-white min-w-[130px]c"
                 handleClick={openLoginModal}
               />
@@ -244,7 +243,6 @@ const NavBar = () => {
               <CustomButton
                 title="Sign up"
                 btnType="button"
-        
                 containerStyles="text-primary-blue rounded-full bg-white min-w-[130px]"
                 handleClick={openModal}
               />
