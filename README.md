@@ -33,7 +33,7 @@ With Elusiv's privacy payment protocol, we are shaping a future where privacy is
 
 Feel free to customize this readme according to your specific needs.
 
-##
+## Development Team
 
 [Follow me Furkan](https://twitter.com/FurkanSezal)
 [Follow me Tolgahan](https://twitter.com/imArga_)
