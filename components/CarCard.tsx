@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Elusiv } from '@elusiv/sdk';
+import { Elusiv } from "@elusiv/sdk";
 
 import { calculateCarRent, generateCarImageUrl } from "@utils";
 import { CarProps } from "@types";
@@ -10,7 +10,9 @@ import CustomButton from "./CustomButton";
 import CarDetails from "./CarDetails";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { supabase } from "@utils/supabase";
-import { LAMPORTS_PER_SOL, Transaction, Keypair } from '@solana/web3.js';
+import { LAMPORTS_PER_SOL, Transaction, Keypair } from "@solana/web3.js";
+import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 
 interface CarCardProps {
   car: CarProps;
@@ -20,65 +22,83 @@ const CarCard = ({ car }: CarCardProps) => {
   const { city_mpg, year, make, model, transmission, drive } = car;
 
   const [isOpen, setIsOpen] = useState(false);
-  const [user, setUser]: any = useState()
+  const [user, setUser]: any = useState();
+  const { connection } = useConnection();
+  const { publicKey, sendTransaction, signTransaction }: any = useWallet();
 
   const carRent = calculateCarRent(city_mpg, year);
 
   const getUser = async () => {
-
-    const { data: { user }, error } = await supabase.auth.getUser()
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
 
     if (!error) {
-      setUser(user)
-      console.log(user?.user_metadata.wallet)
+      setUser(user);
+      console.log(user?.user_metadata.wallet);
     }
-
-  }
-
-  function getUserPubKey(): any {
-    const publickKey = new PublicKey(user?.user_metadata.wallet)
-    return publickKey;
-  }
-
-  // Create the elusiv instance
-  const cluster = 'devnet';
-  const connection = new Connection("https://api.devnet.solana.com", 'confirmed')
-  const recipient = new PublicKey('3yviVNNhBJzqkWGVrhFEswiGJKmg3U7wwLJXp7iD9s21');
-
-
+  };
 
   async function performEluvioTransactions() {
     try {
+      // Checking the wallet connection
+      if (!publicKey) throw new WalletNotConnectedError();
+
+      // getting seed for elusiv
+      const seed = publicKey.toBytes();
+
       // Create the elusiv instance
-      const cluster = 'devnet';
-      const connection = new Connection("https://api.devnet.solana.com", 'confirmed')
-      const seed = new Uint8Array([]);
+      const cluster = "devnet";
+      const connection = new Connection(
+        "https://api.devnet.solana.com",
+        "confirmed"
+      );
 
-     
-      const elusiv = await Elusiv.getElusivInstance(seed, getUserPubKey(), connection, cluster);
+      const elusiv = await Elusiv.getElusivInstance(
+        seed,
+        publicKey,
+        connection,
+        cluster
+      );
 
-      // Top up our private balance with 1 SOL
-      const topupTxData = await elusiv.buildTopUpTx(LAMPORTS_PER_SOL, 'LAMPORTS');
+      // define the recipient
+      const recipient = new PublicKey(
+        "98tuTXembYwBCJJModyyGHBXwhWcaLdFv582bpNN1eV1"
+      );
 
-      /* // Sign and send the top-up transaction
-      topupTxData.tx = signTx(topupTxData.tx);
+      // Top up our private balance with 0.01 SOL
+      let topupTxData = await elusiv.buildTopUpTx(
+        0.01 * LAMPORTS_PER_SOL,
+        "LAMPORTS"
+      );
+
+      // sign the transaction
+      topupTxData.tx = await signTransaction(topupTxData.tx);
+
+      // send the top-up transaction
+
       const storeSig = await elusiv.sendElusivTx(topupTxData);
 
-      // Send half a SOL, privately
-      const sendTx = await elusiv.buildSendTx(0.5 * LAMPORTS_PER_SOL, recipient, 'LAMPORTS');
+      // Send 0.01 SOL, privately
+
+      const sendTx = await elusiv.buildSendTx(
+        0.01 * LAMPORTS_PER_SOL,
+        recipient,
+        "LAMPORTS"
+      );
+
       const sendSig = await elusiv.sendElusivTx(sendTx);
 
-      console.log('Ta-da!'); */
+      console.log("Ta-da!");
     } catch (error) {
-      console.error('An error occurred:', error);
-    } }
+      console.error("An error occurred:", error);
+    }
+  }
 
-
-
-
- useEffect(() => {
-  getUser()
- }, [])
+  useEffect(() => {
+    getUser();
+  }, []);
 
   return (
     <div className="car-card group">
@@ -88,21 +108,36 @@ const CarCard = ({ car }: CarCardProps) => {
         </h2>
       </div>
 
-      <p className='flex mt-6 text-[32px] leading-[38px] font-extrabold'>
-        <span className='self-start text-[14px] leading-[17px] font-semibold'>$</span>
+      <p className="flex mt-6 text-[32px] leading-[38px] font-extrabold">
+        <span className="self-start text-[14px] leading-[17px] font-semibold">
+          $
+        </span>
         {carRent}
-        <span className='self-end text-[14px] leading-[17px] font-medium'>/day</span>
+        <span className="self-end text-[14px] leading-[17px] font-medium">
+          /day
+        </span>
       </p>
 
-      <div className='relative w-full h-40 my-3 object-contain'>
-        <Image src={generateCarImageUrl(car)} alt='car model' fill priority className='object-contain' />
+      <div className="relative w-full h-40 my-3 object-contain">
+        <Image
+          src={generateCarImageUrl(car)}
+          alt="car model"
+          fill
+          priority
+          className="object-contain"
+        />
       </div>
 
-      <div className='relative flex w-full mt-2'>
-        <div className='flex group-hover:invisible w-full justify-between text-grey'>
-          <div className='flex flex-col justify-center items-center gap-2'>
-            <Image src='/steering-wheel.svg' width={20} height={20} alt='steering wheel' />
-            <p className='text-[14px] leading-[17px]'>
+      <div className="relative flex w-full mt-2">
+        <div className="flex group-hover:invisible w-full justify-between text-grey">
+          <div className="flex flex-col justify-center items-center gap-2">
+            <Image
+              src="/steering-wheel.svg"
+              width={20}
+              height={20}
+              alt="steering wheel"
+            />
+            <p className="text-[14px] leading-[17px]">
               {transmission === "a" ? "Automatic" : "Manual"}
             </p>
           </div>
@@ -118,27 +153,29 @@ const CarCard = ({ car }: CarCardProps) => {
 
         <div className="car-card__btn-container">
           <CustomButton
-            title='View More'
-            containerStyles='w-full py-[16px] rounded-full bg-primary-blue'
-            textStyles='text-white text-[14px] leading-[17px] font-bold'
-            rightIcon='/right-arrow.svg'
+            title="View More"
+            containerStyles="w-full py-[16px] rounded-full bg-primary-blue"
+            textStyles="text-white text-[14px] leading-[17px] font-bold"
+            rightIcon="/right-arrow.svg"
             handleClick={() => setIsOpen(true)}
           />
-               <CustomButton
-            title='View More'
-            containerStyles='w-full py-[16px] rounded-full bg-primary-blue'
-            textStyles='text-white text-[14px] leading-[17px] font-bold'
-            rightIcon='/right-arrow.svg'
-            handleClick={ performEluvioTransactions}
+          <CustomButton
+            title="Rent the Car"
+            containerStyles="w-full py-[16px] rounded-full bg-primary-blue"
+            textStyles="text-white text-[14px] leading-[17px] font-bold"
+            rightIcon="/right-arrow.svg"
+            handleClick={performEluvioTransactions}
           />
         </div>
       </div>
 
-      <CarDetails isOpen={isOpen} closeModal={() => setIsOpen(false)} car={car} />
+      <CarDetails
+        isOpen={isOpen}
+        closeModal={() => setIsOpen(false)}
+        car={car}
+      />
     </div>
   );
 };
 
 export default CarCard;
-
-
