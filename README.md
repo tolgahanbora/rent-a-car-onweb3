@@ -13,9 +13,12 @@ Users can view available vehicles and find their preferred cars using search fil
 
 ## Possible Use Cases
 The MVP Car Rental DApp encompasses several possible use cases, including:
-**Individual Users**: Individual users can benefit from the car rental service by renting vehicles for their travels or daily needs. For example, a user can rent a car to visit a friend over the weekend or for running errands on a daily basis.
-**Business Travel**: Users on business trips can utilize the car rental service to meet their transportation needs during work-related travels. For instance, a rented car can be used to attend meetings or explore the city during a business trip. This way, users can manage their business schedule more efficiently.
-**Vacationers**: Vacationers can prefer to explore a new city or country independently by taking advantage of the car rental service. For example, a vacationer can rent a car to visit tourist attractions or discover unexplored areas. This use case allows vacationers to customize their travel experience according to their preferences.
+
+1) **Individual Users**: Individual users can benefit from the car rental service by renting vehicles for their travels or daily needs. For example, a user can rent a car to visit a friend over the weekend or for running errands on a daily basis.
+   
+2) **Business Travel**: Users on business trips can utilize the car rental service to meet their transportation needs during work-related travels. For instance, a rented car can be used to attend meetings or explore the city during a business trip. This way, users can manage their business schedule more efficiently.
+  
+3) **Vacationers**: Vacationers can prefer to explore a new city or country independently by taking advantage of the car rental service. For example, a vacationer can rent a car to visit tourist attractions or discover unexplored areas. This use case allows vacationers to customize their travel experience according to their preferences.
 
 
 ## Privacy Matters
