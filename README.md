@@ -5,6 +5,19 @@ In today's digital age, privacy and security have become increasingly important 
 
 To address these concerns and provide users with a trustworthy and secure experience, we have developed a decentralized application (DApp) for car rentals that leverages Elusiv's privacy payment protocol.
 
+## User Registration
+Users can create an account by providing basic information such as first name, last name, email, and password. Users can also upload the necessary documents for identity verification.
+
+## Car Rental
+Users can view available vehicles and find their preferred cars using search filters. Once they have selected the car they wish to rent, they can complete the rental process.
+
+## Possible Use Cases
+The MVP Car Rental DApp encompasses several possible use cases, including:
+**Individual Users: Individual users can benefit from the car rental service by renting vehicles for their travels or daily needs. For example, a user can rent a car to visit a friend over the weekend or for running errands on a daily basis.
+**Business Travel: Users on business trips can utilize the car rental service to meet their transportation needs during work-related travels. For instance, a rented car can be used to attend meetings or explore the city during a business trip. This way, users can manage their business schedule more efficiently.
+**Vacationers: Vacationers can prefer to explore a new city or country independently by taking advantage of the car rental service. For example, a vacationer can rent a car to visit tourist attractions or discover unexplored areas. This use case allows vacationers to customize their travel experience according to their preferences.
+
+
 ## Privacy Matters
 Privacy is not just a luxury; it is a fundamental right that individuals should have when engaging in any online activity. When it comes to car rentals, customers are often required to provide personal and financial information, such as driver's license details, credit card numbers, and addresses. Traditional centralized systems in the car rental industry pose significant privacy risks, as this sensitive data is stored in centralized databases that can be vulnerable to hacks, data breaches, or misuse by insiders.
 
