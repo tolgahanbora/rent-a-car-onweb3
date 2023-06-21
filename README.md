@@ -13,6 +13,9 @@ With Elusiv's privacy payment protocol integrated into our car rental DApp, we a
 
 This means that users can rent cars without revealing their personal information or financial details to the car rental service provider, reducing the risk of identity theft, fraud, or unauthorized access to their data.
 
+[Follow me Furkan](https://twitter.com/FurkanSezal)
+[Follow me Tolgahan](https://twitter.com/imArga_)
+
 ## Maintaining Trust and Transparency
 By implementing Elusiv's privacy payment protocol, our car rental DApp fosters a sense of trust and transparency between the service provider and the customers. Users can have peace of mind knowing that their privacy is respected, as their sensitive information remains encrypted and inaccessible to unauthorized parties.
 
