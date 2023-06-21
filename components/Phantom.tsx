@@ -41,8 +41,7 @@ const ConnectWalletButton = ({ setWalletAddress }: any) => {
 
   return (
     <div>
-      <WalletMultiButton />
-      <WalletDisconnectButton />
+
     </div>
   );
 };

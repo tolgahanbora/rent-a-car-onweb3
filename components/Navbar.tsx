@@ -70,10 +70,10 @@ const NavBar = () => {
 
     if (error) {
       // Kayıt sırasında bir hata oluştuysa
-      toast.error("Kayıt işlemi başarısız oldu.");
+      toast.error("The registration process failed.");
     } else {
       // Kayıt başarılı olduğunda
-      toast.success("Kayıt işlemi başarıyla tamamlandı.");
+      toast.success("Successfully created your account.");
     }
     // Form submit işlemleri
     console.log("Email:", email);
@@ -97,10 +97,10 @@ const NavBar = () => {
 
     if (error) {
       // Kayıt sırasında bir hata oluştuysa
-      toast.error("Kayıt işlemi başarısız oldu.");
+      toast.error("Failed to log in");
     } else {
       // Kayıt başarılı olduğunda
-      toast.success("Kayıt işlemi başarıyla tamamlandı.");
+      toast.success("You have successfully logged in.");
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -209,9 +209,14 @@ const NavBar = () => {
               </Modal>
 
               <div className="flex items-center space-x-2">
+
+              <WalletMultiButton />
+              <WalletDisconnectButton />
+
                 <CustomButton
                   title="Profile"
                   btnType="button"
+          
                   containerStyles="text-primary-blue rounded-full bg-white min-w-[130px]"
                   handleClick={openProfileModal}
                 />
@@ -220,17 +225,18 @@ const NavBar = () => {
               <CustomButton
                 title="Logout"
                 btnType="button"
+        
                 containerStyles="text-primary-blue rounded-full bg-white min-w-[130px]"
                 handleClick={handleLogout}
               />
-              <WalletMultiButton />
-              <WalletDisconnectButton />
+            
             </>
           ) : (
             <>
               <CustomButton
                 title="Login"
                 btnType="button"
+   
                 containerStyles="text-primary-blue rounded-full bg-white min-w-[130px]c"
                 handleClick={openLoginModal}
               />
@@ -238,6 +244,7 @@ const NavBar = () => {
               <CustomButton
                 title="Sign up"
                 btnType="button"
+        
                 containerStyles="text-primary-blue rounded-full bg-white min-w-[130px]"
                 handleClick={openModal}
               />

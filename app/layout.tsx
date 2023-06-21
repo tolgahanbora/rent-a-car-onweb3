@@ -54,8 +54,7 @@ export default function RootLayout({
       <ConnectionProvider endpoint={endpoint}>
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
-            <WalletMultiButton />
-            <WalletDisconnectButton />
+      
 
             <body className="relative">
               <NavBar />

@@ -48,6 +48,7 @@ export interface CustomButtonProps {
   title: string;
   rightIcon?: string;
   handleClick?: MouseEventHandler<HTMLButtonElement>;
+
 }
 
 export interface OptionProps {

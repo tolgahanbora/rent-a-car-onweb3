@@ -14,6 +14,8 @@ import { LAMPORTS_PER_SOL, Transaction, Keypair } from "@solana/web3.js";
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 interface CarCardProps {
   car: CarProps;
 }
@@ -30,17 +32,22 @@ const CarCard = ({ car }: CarCardProps) => {
 
   const getUser = async () => {
     const {
-      data: { user },
+      data,
       error,
     } = await supabase.auth.getUser();
 
     if (!error) {
-      setUser(user);
-      console.log(user?.user_metadata.wallet);
+      setUser(data);
+    
     }
   };
+  useEffect(() => {
+    getUser();
+  }, []);
+
 
   async function performEluvioTransactions() {
+
     try {
       // Checking the wallet connection
       if (!publicKey) throw new WalletNotConnectedError();
@@ -89,17 +96,15 @@ const CarCard = ({ car }: CarCardProps) => {
       );
 
       const sendSig = await elusiv.sendElusivTx(sendTx);
-
+      
+      toast.success("The payment is successful !");
       console.log("Ta-da!");
     } catch (error) {
       console.error("An error occurred:", error);
     }
   }
 
-  useEffect(() => {
-    getUser();
-  }, []);
-
+  
   return (
     <div className="car-card group">
       <div className="car-card__content">
@@ -164,7 +169,13 @@ const CarCard = ({ car }: CarCardProps) => {
             containerStyles="w-full py-[16px] rounded-full bg-primary-blue"
             textStyles="text-white text-[14px] leading-[17px] font-bold"
             rightIcon="/right-arrow.svg"
-            handleClick={performEluvioTransactions}
+            handleClick={() => {
+              if (user) {
+                performEluvioTransactions();
+              } else {
+                alert("Please log in first!");
+              }
+            }}
           />
         </div>
       </div>
@@ -174,6 +185,7 @@ const CarCard = ({ car }: CarCardProps) => {
         closeModal={() => setIsOpen(false)}
         car={car}
       />
+     <ToastContainer />
     </div>
   );
 };
